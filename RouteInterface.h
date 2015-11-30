@@ -27,6 +27,8 @@
 #include "INETDefs.h"
 #include "routeInterface/GloblePositionTable.h"
 #include "TraCIMobility.h"
+#include "RouteInterface/DelayPacketTable.h"
+
 
 class RouteInterface: public cSimpleModule,
         public ILifecycle,
@@ -35,6 +37,7 @@ class RouteInterface: public cSimpleModule,
 public:
     RouteInterface();
     virtual ~RouteInterface();
+    DelayPacketTable delayPacketlist;
 protected:
     unsigned int UDPPort;
     IRoutingTable *routingTable;
@@ -98,6 +101,8 @@ protected:
    // void SetGloblePositionTable(GloblePositionTable gl);
     void  configureInterfaces(const char * interfaces);
     Coord getSelfPosition();
+    bool  isRoadOfConn(std::string road,std::string conn);
+    std::vector<std::string> getConnOfRoad(std::string road);
 
 };
 

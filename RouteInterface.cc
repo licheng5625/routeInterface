@@ -247,4 +247,23 @@ void RouteInterface::CarPostion()
     this->globlePositionTable=gl;
 }*/
 
-
+bool  RouteInterface::isRoadOfConn(std::string road,std::string conn)
+{
+    std::vector<std::string>  conns=getConnOfRoad(road);
+    if(std::find(conns.begin(),conns.end(),conn)!=conns.end())
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+std::vector<std::string>  RouteInterface::getConnOfRoad(std::string road)
+{
+    std::vector<std::string>  conn;
+    conn.push_back(road.substr(0,3));
+    conn.push_back(road.substr(5));
+    EV_LOG("RBVTP",road);
+    return conn;
+}
