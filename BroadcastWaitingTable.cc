@@ -68,7 +68,16 @@ cMessage* PacketWaitingTable::findPacket(cPacket*  packet) {
     }
     return NULL;
 }
-
+cMessage* PacketWaitingTable::findPacket(std::string packetname) {
+    for (TimetoRDPacket::const_iterator it = waitinglist.begin(); it != waitinglist.end(); it++)
+    {
+        if(it->second.first->getName()==packetname)
+        {
+            return it->first;
+        }
+    }
+    return NULL;
+}
 void PacketWaitingTable::clear() {
     waitinglist.clear();
 }

@@ -48,6 +48,7 @@ class INET_API PacketWaitingTable {
          void  removePacket(cMessage* timer) ;
 
          cMessage* findPacket(cPacket*  packet) ;
+         cMessage* findPacket(std::string packetname);
 
         void clear();
 
