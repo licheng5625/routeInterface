@@ -27,8 +27,10 @@
 #include "INETDefs.h"
 #include "routeInterface/GloblePositionTable.h"
 #include "TraCIMobility.h"
-#include "RouteInterface/DelayPacketTable.h"
-
+#include "routeInterface/DelayPacketTable.h"
+#include <string>
+#include <iostream>
+#include <algorithm>
 
 class RouteInterface: public cSimpleModule,
         public ILifecycle,
@@ -51,7 +53,7 @@ protected:
     NotificationBoard *nb;
 
 
-   // static GloblePositionTable globlePositionTable;
+    static GloblePositionTable globlePositionTable;
 
     //self message
     cMessage *expungeTimer;    // timer to clean the routing table out

@@ -47,8 +47,9 @@ class INET_API DelayPacketTable {
         void addPacket(const IPvXAddress & address,IPv4Datagram * packet);
 
         void removePacket(const IPvXAddress & address);
+        void removePacket(const IPvXAddress & address,string name);
 
-        std::multimap<IPvXAddress, IPv4Datagram *>::iterator getlowbound(const IPvXAddress& target);
+        std::multimap<IPvXAddress, IPv4Datagram *>::iterator getlowerbound(const IPvXAddress& target);
 
         std::multimap<IPvXAddress, IPv4Datagram *>::iterator getupperbound(const IPvXAddress& target);
 

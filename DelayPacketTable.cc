@@ -24,9 +24,7 @@
 
 void DelayPacketTable::addPacket(const IPvXAddress & address,IPv4Datagram * packet)
 {
-
  delaytable.insert( std::pair<IPvXAddress, IPv4Datagram *>(address, packet));
-
 }
 
 
@@ -46,14 +44,34 @@ bool DelayPacketTable::hasPacket(const IPvXAddress & address)   {
 
 
 void DelayPacketTable::removePacket(const IPvXAddress & address) {
-        std::multimap<IPvXAddress, IPv4Datagram *>::iterator lt = getlowbound(address);
+        std::multimap<IPvXAddress, IPv4Datagram *>::iterator lt = getlowerbound(address);
         std::multimap<IPvXAddress, IPv4Datagram *>::iterator ut = getupperbound(address);
-        delaytable.erase(lt, ut);
+         delaytable.erase(lt, ut);
+}
+void DelayPacketTable::removePacket(const IPvXAddress & address,string name) {
+       bool flag=true;
+       while(flag)
+       {
+           flag=false;
+           std::multimap<IPvXAddress, IPv4Datagram *>::iterator lt = getlowerbound(address);
+           std::multimap<IPvXAddress, IPv4Datagram *>::iterator ut = getupperbound(address);
+           for (std::multimap<IPvXAddress, IPv4Datagram *>::iterator it = lt; it != ut; it++)
+               {
+                   std::cout<<" try to delete "<<it->second->getName()<<" match to "<<name.c_str()<<endl;
+
+                   if(string(it->second->getName())==name)
+                   {
+                       delaytable.erase(it);
+                       flag=true;
+                       break;
+                   }
+               }
+       }
+
+        std::cout<<"finish? "<<name<<endl;
 }
 
-
-
-std::multimap<IPvXAddress, IPv4Datagram *>::iterator DelayPacketTable::getlowbound(const IPvXAddress& target)
+std::multimap<IPvXAddress, IPv4Datagram *>::iterator DelayPacketTable::getlowerbound(const IPvXAddress& target)
         {
             return delaytable.lower_bound(target);
         }

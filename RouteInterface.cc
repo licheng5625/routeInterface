@@ -9,7 +9,7 @@
 #include <routeInterface/RouteData.h>
 #include "NodeOperations.h"
 
-
+GloblePositionTable RouteInterface::globlePositionTable=GloblePositionTable();
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
 
@@ -100,11 +100,12 @@ void RouteInterface::MulticastRIPacket(cPacket * packet)
 void RouteInterface::handleMessage(cMessage *message)
 {
     EV_LOG("RouteInterface","handleMessage");
-
     if (message->isSelfMessage()) {
-         filterSelfMessage(message);
+        EV<<"RouteInterface  handle self message  "<<message<<endl;
+        filterSelfMessage(message);
     }else
     {
+        EV<<"RouteInterface  handle outer message  "<<message<<endl;
         UDPPacket *udpPacket = dynamic_cast<UDPPacket *>(message);
         cPacket *ctrlPacket = check_and_cast<cPacket *>(udpPacket->decapsulate());
         IPv4ControlInfo *udpProtocolCtrlInfo = dynamic_cast<IPv4ControlInfo *>(udpPacket->getControlInfo());
