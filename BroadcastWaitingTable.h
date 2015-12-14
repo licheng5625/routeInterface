@@ -49,6 +49,7 @@ class INET_API PacketWaitingTable {
 
          cMessage* findPacket(cPacket*  packet) ;
          cMessage* findPacket(std::string packetname);
+         std::vector<cMessage*> getAllmessages();
 
         void clear();
 

@@ -53,10 +53,10 @@ IPv4Datagram * PacketWaitingTable::getDataPacket(cMessage * timer )
 
 void PacketWaitingTable::removePacket(cMessage*  timer) {
     TimetoRDPacket::iterator it = waitinglist.find(timer);
-    //delete it->second;
+    printf("delete timer  %p\n",timer);
+    printf("delete timer  %p\n",it->first);
     waitinglist.erase(it);
-   // cancelAndDelete(timer);
-}
+ }
 
 cMessage* PacketWaitingTable::findPacket(cPacket*  packet) {
     for (TimetoRDPacket::const_iterator it = waitinglist.begin(); it != waitinglist.end(); it++)
@@ -77,6 +77,15 @@ cMessage* PacketWaitingTable::findPacket(std::string packetname) {
         }
     }
     return NULL;
+}
+
+std::vector<cMessage*> PacketWaitingTable::getAllmessages() {
+    std::vector<cMessage*> ret;
+    for (TimetoRDPacket::const_iterator it = waitinglist.begin(); it != waitinglist.end(); it++)
+    {
+        ret.push_back( it->first);
+    }
+    return ret;
 }
 void PacketWaitingTable::clear() {
     waitinglist.clear();

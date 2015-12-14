@@ -61,6 +61,7 @@ IPv4Address RouteInterface::getSelfIPAddress() const
 void RouteInterface::EV_LOG(std::string className,std::string context)
 {
   EV <<  className<<"  "<<context<<std::endl;
+  std::cout <<  className<<"  "<<context<<std::endl;
 }
 void RouteInterface::sendRIPacket(cPacket * packet, const IPvXAddress& destAddr, unsigned int timeToLive, double delay)
 {
@@ -265,6 +266,5 @@ std::vector<std::string>  RouteInterface::getConnOfRoad(std::string road)
     std::vector<std::string>  conn;
     conn.push_back(road.substr(0,3));
     conn.push_back(road.substr(5));
-    EV_LOG("RBVTP",road);
     return conn;
 }
