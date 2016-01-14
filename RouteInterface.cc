@@ -40,10 +40,27 @@ void RouteInterface::initialize(int stage)
 
             nb = NotificationBoardAccess().get();
             networkProtocol->registerHook(0, this);
+            nb->subscribe(this, NF_LINK_FULL_PROMISCUOUS);
             }
  }
 
-
+void RouteInterface::receiveChangeNotification(int category, const cObject *details)
+{
+    EV_LOG("CAR","receiveChangeNotification");
+    Enter_Method("receiveChangeNotification");
+    if (category == NF_LINK_FULL_PROMISCUOUS)
+      {
+          cPacket * pk = dynamic_cast<cPacket*>(  const_cast<cObject *>(details) );
+          if (pk)
+          {
+             Radio80211aControlInfo * cinfo = dynamic_cast<Radio80211aControlInfo*>(pk->getControlInfo());
+             if (cinfo)
+             {
+                recPow = cinfo->getRecPow();
+             }
+          }
+      }
+}
 
 void RouteInterface::sendUDPPacket(UDPPacket * packet, double delay)
 {

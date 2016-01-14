@@ -18,6 +18,7 @@
 #include "IPv4ControlInfo.h"
 #include "RoutingTableAccess.h"
 #include "InterfaceTableAccess.h"
+#include "Radio80211aControlInfo_m.h"
 #include "ILifecycle.h"
 #include "IMobility.h"
 #include "INetfilter.h"
@@ -40,6 +41,7 @@ public:
     RouteInterface();
     virtual ~RouteInterface();
     DelayPacketTable delayPacketlist;
+    double recPow;
 protected:
     unsigned int UDPPort;
     IRoutingTable *routingTable;
@@ -70,6 +72,7 @@ protected:
     void processUDPPacket(UDPPacket * packet);
     void expungeRoutes();
 
+    virtual void receiveChangeNotification(int category, const cObject *details);
 
     void filterSelfMessage(cMessage * message);
 
@@ -94,7 +97,6 @@ protected:
     virtual bool handleOperationStage(LifecycleOperation * operation, int stage, IDoneCallback * doneCallback);
 
     // notification
-    virtual void receiveChangeNotification(int signalID, const cObject *obj){};
 
     void CarPostion();
     std::string adjustRoadID(std::string roadid);
