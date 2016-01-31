@@ -105,8 +105,10 @@ protected:
    // void SetGloblePositionTable(GloblePositionTable gl);
     void  configureInterfaces(const char * interfaces);
     Coord getSelfPosition();
+    Coord getSelfSpeed();
     bool  isRoadOfConn(std::string road,std::string conn);
     std::vector<std::string> getConnOfRoad(std::string road);
+    Coord getConnectPosition(std::string conn);
 
 };
 

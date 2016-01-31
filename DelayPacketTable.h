@@ -24,7 +24,6 @@
 #include "INETDefs.h"
 #include "IPvXAddress.h"
 #include <IPv4Datagram.h>
-#include <RBVTR/RBVTRPacket.h>
 
 using namespace std;
 

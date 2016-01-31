@@ -43,10 +43,13 @@ void RouteInterface::initialize(int stage)
             nb->subscribe(this, NF_LINK_FULL_PROMISCUOUS);
             }
  }
-
+Coord RouteInterface::getConnectPosition(std::string conn)
+{
+    return tracimanager->commandGetJunctionPosition(conn);
+}
 void RouteInterface::receiveChangeNotification(int category, const cObject *details)
 {
-    EV_LOG("CAR","receiveChangeNotification");
+    EV_LOG("RouteInterface ","receiveChangeNotification");
     Enter_Method("receiveChangeNotification");
     if (category == NF_LINK_FULL_PROMISCUOUS)
       {
@@ -219,6 +222,10 @@ IPvXAddress RouteInterface::getSelfAddress() const
 Coord RouteInterface::getSelfPosition()
 {
     return mobility->getCurrentPosition();
+}
+Coord RouteInterface::getSelfSpeed()
+{
+    return mobility->getCurrentSpeed();
 }
 void RouteInterface::expungeRoutes()
 {
