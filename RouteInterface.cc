@@ -9,7 +9,7 @@
 #include <routeInterface/RouteData.h>
 #include "NodeOperations.h"
 
-GloblePositionTable RouteInterface::globlePositionTable=GloblePositionTable();
+GlobalPositionTable RouteInterface::globalPositionTable=GlobalPositionTable();
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
 

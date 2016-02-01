@@ -28,7 +28,7 @@
 /**
  * This class provides a mapping between node addresses and their positions.
  */
-class  GloblePositionTable {
+class  GlobalPositionTable {
     private:
         typedef std::pair<simtime_t, Coord> AddressToPositionMapValue;
         typedef std::map<IPvXAddress, AddressToPositionMapValue> AddressToPositionMap;
@@ -37,7 +37,7 @@ class  GloblePositionTable {
         AddressToHostnameMap addressToHostnameMap;
 
     public:
-        GloblePositionTable() { }
+        GlobalPositionTable() { }
 
         std::vector<IPvXAddress> getAddresses() const;
 

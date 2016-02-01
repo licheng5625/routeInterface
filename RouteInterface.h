@@ -26,7 +26,7 @@
 #include "NodeStatus.h"
 #include "NotificationBoard.h"
 #include "INETDefs.h"
-#include "routeInterface/GloblePositionTable.h"
+#include "routeInterface/GlobalPositionTable.h"
 #include "TraCIMobility.h"
 #include "routeInterface/DelayPacketTable.h"
 #include <string>
@@ -55,7 +55,7 @@ protected:
     NotificationBoard *nb;
 
 
-    static GloblePositionTable globlePositionTable;
+    static GlobalPositionTable globalPositionTable;
 
     //self message
     cMessage *expungeTimer;    // timer to clean the routing table out

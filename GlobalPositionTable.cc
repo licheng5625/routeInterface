@@ -16,41 +16,41 @@
 // Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 //
 
-#include "routeInterface/GloblePositionTable.h"
+#include "routeInterface/GlobalPositionTable.h"
 
 static double const NaN = 0.0 / 0.0;
 
-std::vector<IPvXAddress> GloblePositionTable::getAddresses() const {
+std::vector<IPvXAddress> GlobalPositionTable::getAddresses() const {
     std::vector<IPvXAddress> addresses;
     for (AddressToPositionMap::const_iterator it = addressToPositionMap.begin(); it != addressToPositionMap.end(); it++)
         addresses.push_back(it->first);
     return addresses;
 }
 
-bool GloblePositionTable::hasPosition(const IPvXAddress & address) const {
+bool GlobalPositionTable::hasPosition(const IPvXAddress & address) const {
     AddressToPositionMap::const_iterator it = addressToPositionMap.find(address);
     return it != addressToPositionMap.end();
 }
 
-Coord GloblePositionTable::getPosition(const IPvXAddress & address) const {
+Coord GlobalPositionTable::getPosition(const IPvXAddress & address) const {
     AddressToPositionMap::const_iterator it = addressToPositionMap.find(address);
     if (it == addressToPositionMap.end())
         return Coord(NaN, NaN, NaN);
     else
         return it->second.second;
 }
-void GloblePositionTable::setPosition(const IPvXAddress & address, const Coord & coord){
+void GlobalPositionTable::setPosition(const IPvXAddress & address, const Coord & coord){
     ASSERT(!address.isUnspecified());
     addressToPositionMap[address] = AddressToPositionMapValue(simTime(), coord);
 }
 
-void GloblePositionTable::setHostName(const IPvXAddress & address, const std::string hostname)
+void GlobalPositionTable::setHostName(const IPvXAddress & address, const std::string hostname)
 {
     ASSERT(!address.isUnspecified());
     addressToHostnameMap[address] = hostname;
 }
 
-std::string GloblePositionTable::getHostName(const IPvXAddress & address) const {
+std::string GlobalPositionTable::getHostName(const IPvXAddress & address) const {
     AddressToHostnameMap::const_iterator it = addressToHostnameMap.find(address);
         if (it == addressToHostnameMap.end())
             return "NONE";
@@ -58,12 +58,12 @@ std::string GloblePositionTable::getHostName(const IPvXAddress & address) const 
             return it->second;
 }
 
-void GloblePositionTable::removePosition(const IPvXAddress & address) {
+void GlobalPositionTable::removePosition(const IPvXAddress & address) {
     AddressToPositionMap::iterator it = addressToPositionMap.find(address);
     addressToPositionMap.erase(it);
 }
 
-void GloblePositionTable::removeOldPositions(simtime_t timestamp) {
+void GlobalPositionTable::removeOldPositions(simtime_t timestamp) {
     for (AddressToPositionMap::iterator it = addressToPositionMap.begin(); it != addressToPositionMap.end();)
         if (it->second.first <= timestamp)
             addressToPositionMap.erase(it++);
@@ -71,7 +71,7 @@ void GloblePositionTable::removeOldPositions(simtime_t timestamp) {
             it++;
 }
 
-void GloblePositionTable::clear() {
+void GlobalPositionTable::clear() {
     addressToPositionMap.clear();
     addressToHostnameMap.clear();
 }
