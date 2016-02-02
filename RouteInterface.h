@@ -98,7 +98,6 @@ protected:
 
     // notification
 
-    void CarPostion();
     std::string adjustRoadID(std::string roadid);
 
     void EV_LOG(std::string className,std::string context);
@@ -107,6 +106,7 @@ protected:
     Coord getSelfPosition();
     Coord getSelfSpeed();
     bool  isRoadOfConn(std::string road,std::string conn);
+    double getAngel();
     std::vector<std::string> getConnOfRoad(std::string road);
     Coord getConnectPosition(std::string conn);
 

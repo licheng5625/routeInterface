@@ -265,13 +265,12 @@ void RouteInterface::configureInterfaces( const char * interfaces)
         }
     }
 }
-void RouteInterface::CarPostion()
+double RouteInterface::getAngel()
 {
-    mobility->getCurrentPosition();
+    //return traci->getRoadId();
+   return  traci->getAngleRad();
+    //cout<<host;
 }
-/*void RouteInterface::SetGloblePositionTable(GloblePositionTable gl){
-    this->globlePositionTable=gl;
-}*/
 
 bool  RouteInterface::isRoadOfConn(std::string road,std::string conn)
 {
