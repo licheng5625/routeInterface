@@ -81,7 +81,7 @@ IPv4Address RouteInterface::getSelfIPAddress() const
 void RouteInterface::EV_LOG(std::string className,std::string context)
 {
   EV <<  className<<"  "<<context<<std::endl;
-  std::cout <<  className<<"  "<<context<<std::endl;
+  std::cout <<getHostName()<<"   "<<  className<<"  "<<context<<std::endl;
 }
 void RouteInterface::sendRIPacket(cPacket * packet, const IPvXAddress& destAddr, unsigned int timeToLive, double delay)
 {
