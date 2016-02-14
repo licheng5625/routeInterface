@@ -42,6 +42,7 @@ public:
     virtual ~RouteInterface();
     DelayPacketTable delayPacketlist;
     double recPow;
+    std::string roadid;
 protected:
     unsigned int UDPPort;
     IRoutingTable *routingTable;
@@ -56,7 +57,10 @@ protected:
 
 
     static GlobalPositionTable globalPositionTable;
+    static ofstream inFile;
+    std::vector<std::string>roadslist;
 
+        /*ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建*/
     //self message
     cMessage *expungeTimer;    // timer to clean the routing table out
 
@@ -82,6 +86,7 @@ protected:
     std::string  getRoadID() ;
     std::string getRoadIntersection(std::string road1,std::string road2);
     bool hasIntersection(std::string road,std::string intersce);
+    bool  isRoadVertical(std::string road1,std::string road2);
 
     IPvXAddress  getSelfAddress() const;
     virtual int numInitStages() const { return 5; }
@@ -101,6 +106,8 @@ protected:
     std::string adjustRoadID(std::string roadid);
 
     void EV_LOG(std::string className,std::string context);
+    void EV_LOG(std::string context);
+
    // void SetGloblePositionTable(GloblePositionTable gl);
     void  configureInterfaces(const char * interfaces);
     Coord getSelfPosition();
@@ -109,6 +116,8 @@ protected:
     double getAngel();
     std::vector<std::string> getConnOfRoad(std::string road);
     Coord getConnectPosition(std::string conn);
+    void initRoadsTable();
+    std::string caculateConnection(std::string conn1,std::string conn2);
 
 };
 

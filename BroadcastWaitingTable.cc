@@ -54,7 +54,6 @@ IPv4Datagram * PacketWaitingTable::getDataPacket(cMessage * timer )
 void PacketWaitingTable::removePacket(cMessage*  timer) {
     TimetoRDPacket::iterator it = waitinglist.find(timer);
     printf("delete timer  %p\n",timer);
-    printf("delete timer  %p\n",it->first);
     waitinglist.erase(it);
  }
 

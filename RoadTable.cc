@@ -18,6 +18,7 @@
 
 #include "RoadTable.h"
 
+#define RBVTR_EV EV << "RBVTR at "
 
 
 
@@ -30,12 +31,14 @@ bool RoadTable::addRoadTable(const IPvXAddress & address,vector<string> roads,Co
            if (it == roadtable.end())
            {
                roadtable[address]=roads;
+               std::cout<<"addRoadTable true"<<endl;
                return true;
            }
            else
            {
                if (it->second.size()>roads.size())
                {
+                std::cout<<"addRoadTable true size: "<<it->second.size()<<" new size: "<<roads.size()<<endl;
                 roadtable[address]=roads;
                 return true;
                }
@@ -74,18 +77,34 @@ void RoadTable::findnewRoadid(const IPvXAddress & address,string roadid)   {
 
     vector<string> roads =roadtable[address];
     vector<string>:: iterator it =  roads.begin() ;
-
+    EV<< "road size: "<<roads.size()<<endl ;
+    std::cout<< "road size: "<<roads.size()<<endl ;
+    for(int i=0;i<roads.size();i++)
+    {
+        EV<< "road "<<roads[i]<<endl ;
+        std::cout<< "road   "<<roads[i]<<endl ;
+    }
     for ( ; it != roads.end(); ++it )
     {
-        if(*it == roadid)
+        if(*it == roadid&&it!=roads.begin())
         {
+            EV<< "road shorter"<<endl ;
+            std::cout<< "road shorter"<<endl ;
             roads.erase(roads.begin(),it-1);
+           /* vector<string> temproad(roads.size(), "hello");
+            for(int i =roads.size()-1;i>=0;i--)
+            {
+                temproad.push_back()
+            }*/
             roadtable[address]=roads;
             return;
          }
       }
+
     if (roadid.substr(0,3)==roads[0].substr(5,7))
     {
+        EV<< "turn "<<roads[0]<<"to"<<roadid<<endl ;
+        std::cout<< "turn "<<roads[0]<<"to"<<roadid<<endl ;
         roads.erase(roads.begin(),roads.begin()+1);
     }
     roads.insert(roads.begin(),1,roadid);

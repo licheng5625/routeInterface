@@ -10,12 +10,14 @@
 #include "NodeOperations.h"
 
 GlobalPositionTable RouteInterface::globalPositionTable=GlobalPositionTable();
+ofstream RouteInterface::inFile("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
+//RouteInterface::inFile.open("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
-
 }
 
 RouteInterface::~RouteInterface() {
+   // inFile.close();
     // TODO Auto-generated destructor stub
 }
 void RouteInterface::initialize(int stage)
@@ -41,6 +43,7 @@ void RouteInterface::initialize(int stage)
             nb = NotificationBoardAccess().get();
             networkProtocol->registerHook(0, this);
             nb->subscribe(this, NF_LINK_FULL_PROMISCUOUS);
+            initRoadsTable();
             }
  }
 Coord RouteInterface::getConnectPosition(std::string conn)
@@ -78,6 +81,10 @@ IPv4Address RouteInterface::getSelfIPAddress() const
 {
     return routingTable->getRouterId();
 }
+void RouteInterface::EV_LOG(std::string context)
+{
+    EV_LOG("RouteInterface",context);
+}
 void RouteInterface::EV_LOG(std::string className,std::string context)
 {
   EV <<  className<<"  "<<context<<std::endl;
@@ -87,6 +94,7 @@ void RouteInterface::sendRIPacket(cPacket * packet, const IPvXAddress& destAddr,
 {
     ASSERT(timeToLive != 0);
    // Enter_Method_Silent();
+    EV_LOG("create UDP");
 
     IPv4ControlInfo *networkProtocolControlInfo = new IPv4ControlInfo();
 
@@ -114,19 +122,20 @@ void RouteInterface::MulticastRIPacket(cPacket * packet,  unsigned int timeToLiv
 
 void RouteInterface::MulticastRIPacket(cPacket * packet)
 {
+    EV_LOG("MulticastRIPacket");
     sendRIPacket(packet,IPv4Address::LL_MANET_ROUTERS,255,0);
 }
 
 
 void RouteInterface::handleMessage(cMessage *message)
 {
-    EV_LOG("RouteInterface","handleMessage");
+    EV_LOG("handleMessage");
     if (message->isSelfMessage()) {
-        EV<<"RouteInterface  handle self message  "<<message<<endl;
+        EV_LOG("RouteInterface  handle self message  "+std::string(message->getName()));
         filterSelfMessage(message);
     }else
     {
-        EV<<"RouteInterface  handle outer message  "<<message<<endl;
+        EV_LOG("RouteInterface  handle outer message  "+std::string(message->getName()));
         UDPPacket *udpPacket = dynamic_cast<UDPPacket *>(message);
         cPacket *ctrlPacket = check_and_cast<cPacket *>(udpPacket->decapsulate());
         IPv4ControlInfo *udpProtocolCtrlInfo = dynamic_cast<IPv4ControlInfo *>(udpPacket->getControlInfo());
@@ -156,8 +165,38 @@ std::string RouteInterface::getRoadID()
    return adjustRoadID(traci->getRoadId());
     //cout<<host;
 }
+bool  RouteInterface::isRoadVertical(std::string road1,std::string road2)
+{
+    std::string inter=getRoadIntersection(road1,road2);
+    if(inter==std::string("none"))
+        return false;
+    std::string firstroad="";
+    std::string secondroad="";
+    firstroad=road1.substr(0,3);
+    secondroad=road1.substr(5);
+    if(secondroad!=inter)
+    {
+        firstroad=secondroad;
+    }
+    std::string firstroad2="";
+    std::string secondroad2="";
+    firstroad2=road2.substr(0,3);
+    secondroad2=road2.substr(5);
+    if(secondroad2!=inter)
+        {
+            firstroad2=secondroad2;
+        }
+    if((firstroad.substr(0,1)!=firstroad2.substr(0,1))&&(firstroad.substr(1)!=firstroad2.substr(1)))
+    {
+        return true;
+    }
+    return false;
+}
+
 std::string  RouteInterface::getRoadIntersection(std::string road1,std::string road2)
 {
+    EV_LOG("getRoadIntersection in"+road1+"  "+road2);
+
     std::string firstroad="";
     std::string secondroad="";
     firstroad=road1.substr(0,3);
@@ -175,12 +214,15 @@ std::string  RouteInterface::getRoadIntersection(std::string road1,std::string r
            return secondroad;
     if(secondroad==firstroad2)
            return secondroad;
+    return std::string("none");
 }
 
 bool RouteInterface::hasIntersection(std::string road,std::string intersection)
 {
     std::string firstroad="";
      std::string secondroad="";
+     if(road.length()!=8||intersection.length()!=3)
+         return false;
      firstroad=road.substr(0,3);
      secondroad=road.substr(5);
     if(firstroad==intersection)
@@ -193,9 +235,21 @@ std::string RouteInterface::adjustRoadID(std::string roadid)
 {
     std::string firstroad="";
     std::string secondroad="";
-
-    if (roadid.length()!=8){
+    if (roadid.length()==9){
     roadid.erase(roadid.find(":"),roadid.find(":")+1);
+    }else
+    {
+        if(roadid.length()==6)
+        {
+            roadid.erase(roadid.find(":"),roadid.find(":")+1);
+            return roadid.substr(0,3);
+        }else
+        {
+            if(roadid.length()!=8)
+               {
+            return roadid;
+               }
+        }
     }
     if (roadid[0]>roadid[5])
     {
@@ -211,7 +265,7 @@ std::string RouteInterface::adjustRoadID(std::string roadid)
             return firstroad+"to"+secondroad;
         }
     }
-    return roadid;
+      return roadid;
     //cout<<host;
 }
 
@@ -260,7 +314,6 @@ void RouteInterface::configureInterfaces( const char * interfaces)
         InterfaceEntry * interfaceEntry = interfaceTable->getInterface(i);
         if (interfaceEntry->isMulticast() && interfaceMatcher.matches(interfaceEntry->getName()))
         {
-            EV_LOG("RBVTR","LL_MANET_ROUTERS");
             interfaceEntry->joinMulticastGroup(IPv4Address::LL_MANET_ROUTERS);
         }
     }
@@ -291,3 +344,49 @@ std::vector<std::string>  RouteInterface::getConnOfRoad(std::string road)
     conn.push_back(road.substr(5));
     return conn;
 }
+void RouteInterface::initRoadsTable()
+{
+std::list<std::string> roadsname=tracimanager->commandGetLaneIds();
+    for(std::list<std::string>::iterator iter=roadsname.begin();iter!=roadsname.end();++iter)
+    {
+        std::string templane=*iter;
+        if(templane.length()==10)
+        {
+            templane=templane.substr(0,8);
+            roadslist.push_back(templane);
+        }
+    }
+  }
+string RouteInterface::caculateConnection(std::string conn1,std::string conn2)
+{
+    std::vector<std::string> conn1road=getConnOfRoad(conn1);
+    std::vector<std::string> conn2road=getConnOfRoad(conn2);
+    std::string testconn0=adjustRoadID(conn1road[0]+"to"+conn2road[0]);
+    std::cout <<testconn0<<endl;
+    std::string testconn1=adjustRoadID(conn1road[0]+"to"+conn2road[1]);
+    std::cout <<testconn1<<endl;
+
+    std::string testconn2=adjustRoadID(conn1road[1]+"to"+conn2road[0]);
+    std::cout <<testconn2<<endl;
+
+    std::string testconn3=adjustRoadID(conn1road[1]+"to"+conn2road[1]);
+    std::cout <<testconn3<<endl;
+
+    for(int i=0;i<roadslist.size();i++)
+    {
+        std::cout <<roadslist[i]<<endl;
+        if(roadslist[i]==testconn0)
+            return testconn0;
+        if(roadslist[i]==testconn1)
+                   return testconn1;
+        if(roadslist[i]==testconn2)
+                   return testconn2;
+        if(roadslist[i]==testconn3)
+                   return testconn3;
+
+    }
+    return std::string("none");
+   // UDPPacket*o=NULL;
+   // cPacket *p=check_and_cast<cPacket*>(o);
+  }
+
