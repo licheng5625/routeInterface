@@ -86,6 +86,14 @@ std::vector<cMessage*> PacketWaitingTable::getAllmessages() {
     }
     return ret;
 }
+std::vector<cPacket*> PacketWaitingTable::getAllcPackets() {
+    std::vector<cPacket *> ret;
+    for (TimetoRDPacket::const_iterator it = waitinglist.begin(); it != waitinglist.end(); it++)
+    {
+        ret.push_back( it->second.first);
+    }
+    return ret;
+}
 void PacketWaitingTable::clear() {
     waitinglist.clear();
 }

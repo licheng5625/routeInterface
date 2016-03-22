@@ -10,7 +10,8 @@
 #include "NodeOperations.h"
 
 GlobalPositionTable RouteInterface::globalPositionTable=GlobalPositionTable();
-ofstream RouteInterface::inFile("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
+std::string RouteInterface::protocalname;
+ofstream RouteInterface::inFile("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/"+protocalname+"/log.txt",ios::trunc);
 //RouteInterface::inFile.open("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
@@ -52,7 +53,7 @@ Coord RouteInterface::getConnectPosition(std::string conn)
 }
 void RouteInterface::receiveChangeNotification(int category, const cObject *details)
 {
-    EV_LOG("RouteInterface ","receiveChangeNotification");
+    //EV_LOG("RouteInterface ","receiveChangeNotification");
     Enter_Method("receiveChangeNotification");
     if (category == NF_LINK_FULL_PROMISCUOUS)
       {
@@ -140,6 +141,7 @@ void RouteInterface::handleMessage(cMessage *message)
         cPacket *ctrlPacket = check_and_cast<cPacket *>(udpPacket->decapsulate());
         IPv4ControlInfo *udpProtocolCtrlInfo = dynamic_cast<IPv4ControlInfo *>(udpPacket->getControlInfo());
         processMessage(  ctrlPacket, udpProtocolCtrlInfo);
+        delete udpPacket;
      }
 }
 void RouteInterface:: filterSelfMessage(cMessage * message)

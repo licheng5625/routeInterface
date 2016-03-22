@@ -54,13 +54,12 @@ protected:
     cModule * host;
     INetfilter * networkProtocol;
     NotificationBoard *nb;
-
+    static std::string protocalname;
 
     static GlobalPositionTable globalPositionTable;
     static ofstream inFile;
     std::vector<std::string>roadslist;
 
-        /*ios::trunc表示在打开文件前将文件清空,由于是写入,文件不存在则创建*/
     //self message
     cMessage *expungeTimer;    // timer to clean the routing table out
 
