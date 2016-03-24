@@ -11,7 +11,7 @@
 
 GlobalPositionTable RouteInterface::globalPositionTable=GlobalPositionTable();
 std::string RouteInterface::protocalname;
-ofstream RouteInterface::inFile("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/"+protocalname+"/log.txt",ios::trunc);
+ofstream RouteInterface::inFile("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
 //RouteInterface::inFile.open("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
