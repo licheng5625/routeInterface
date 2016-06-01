@@ -119,7 +119,7 @@ vector<string> RoadTable::getRoadTable(const IPv4Address & address)   {
 }
 Coord RoadTable::getPositionTable(const IPv4Address & address)   {
 
-    AddressToPosition::iterator it ;
+   /* AddressToPosition::iterator it ;
     int i=0;
     cout<<"list packets  for "<<address<<endl;
 
@@ -131,11 +131,12 @@ Coord RoadTable::getPositionTable(const IPv4Address & address)   {
         cout << (it->first==address)<<endl;
     }
     cout<<" have packets:  ";
-    cout<<i<<endl;
+    cout<<i<<endl;*/
     return positontable[address];
 }
 void RoadTable::removeRoadTable(const IPv4Address & address) {
-
+    roadtable.erase(address);
+    positontable.erase(address);
 }
 
 
