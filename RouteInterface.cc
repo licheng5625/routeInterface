@@ -197,7 +197,7 @@ bool  RouteInterface::isRoadVertical(std::string road1,std::string road2)
 
 std::string  RouteInterface::getRoadIntersection(std::string road1,std::string road2)
 {
-    EV_LOG("getRoadIntersection in"+road1+"  "+road2);
+    EV_LOG("getRoadIntersection in "+road1+"  "+road2);
 
     std::string firstroad="";
     std::string secondroad="";

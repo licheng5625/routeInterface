@@ -22,7 +22,7 @@
 #include <vector>
 #include <map>
 #include "INETDefs.h"
-#include "IPvXAddress.h"
+#include "IPv4Address.h"
 #include "Coord.h"
 
 using namespace std;
@@ -32,9 +32,9 @@ using namespace std;
  */
 class INET_API RoadTable {
     private:
-          typedef std::map<IPvXAddress, Coord  > AddressToPosition;
+          typedef std::map<IPv4Address, Coord  > AddressToPosition;
 
-         typedef std::map<IPvXAddress, std::vector<std::string> > AddressToRoad;
+         typedef std::map<IPv4Address, std::vector<std::string> > AddressToRoad;
          AddressToRoad roadtable;
          AddressToPosition positontable;
 
@@ -42,16 +42,16 @@ class INET_API RoadTable {
          RoadTable() { }
 
 
-        vector<IPvXAddress>  getAllIP();
+        vector<IPv4Address>  getAllIP();
 
-        bool hasRoadTable(const IPvXAddress & address);
-        bool addRoadTable(const IPvXAddress & address,vector<string> roads,Coord position);
-        void updataRoadTable(const IPvXAddress & address,vector<string> roads,Coord position);
-        vector<string>  getRoadTable(const IPvXAddress & address);
-        void  findnewRoadid(const IPvXAddress & address,string roadid) ;
+        bool hasRoadTable(const IPv4Address & address);
+        bool addRoadTable(const IPv4Address & address,vector<string> roads,Coord position);
+        void updataRoadTable(const IPv4Address & address,vector<string> roads,Coord position);
+        vector<string>  getRoadTable(const IPv4Address & address);
+        void  findnewRoadid(const IPv4Address & address,string roadid,Coord position);
 
-        void removeRoadTable(const IPvXAddress & address);
-        Coord  getPositionTable(const IPvXAddress & address) ;
+        void removeRoadTable(const IPv4Address & address);
+        Coord  getPositionTable(const IPv4Address & address) ;
 
 
         void clear();

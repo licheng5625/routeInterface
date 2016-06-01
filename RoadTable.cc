@@ -23,11 +23,10 @@
 
 
 
-bool RoadTable::addRoadTable(const IPvXAddress & address,vector<string> roads,Coord position)
+bool RoadTable::addRoadTable(const IPv4Address & address,vector<string> roads,Coord position)
 {
     AddressToRoad::const_iterator it = roadtable.find(address);
     positontable[address]=position;
-
            if (it == roadtable.end())
            {
                roadtable[address]=roads;
@@ -45,15 +44,15 @@ bool RoadTable::addRoadTable(const IPvXAddress & address,vector<string> roads,Co
            }
            return false;
 }
-void RoadTable::updataRoadTable(const IPvXAddress & address,vector<string> roads,Coord position)
+void RoadTable::updataRoadTable(const IPv4Address & address,vector<string> roads,Coord position)
 {
                 positontable[address]=position;
                 roadtable[address]=roads;
 }
-vector<IPvXAddress>  RoadTable::getAllIP()
+vector<IPv4Address>  RoadTable::getAllIP()
         {
       AddressToRoad::iterator it ;
-      vector<IPvXAddress> IPs;
+      vector<IPv4Address> IPs;
            for(it=roadtable.begin();it != roadtable.end();it++)
            {
                IPs.push_back(it->first);
@@ -61,7 +60,7 @@ vector<IPvXAddress>  RoadTable::getAllIP()
            return IPs;
         }
 
-bool RoadTable::hasRoadTable(const IPvXAddress & address)   {
+bool RoadTable::hasRoadTable(const IPv4Address & address)   {
 
     AddressToRoad::const_iterator it = roadtable.find(address);
               if (it == roadtable.end())
@@ -73,17 +72,17 @@ bool RoadTable::hasRoadTable(const IPvXAddress & address)   {
                   return true;
               }
 }
-void RoadTable::findnewRoadid(const IPvXAddress & address,string roadid)   {
+void RoadTable::findnewRoadid(const IPv4Address & address,string roadid,Coord position)   {
 
     vector<string> roads =roadtable[address];
     vector<string>:: iterator it =  roads.begin() ;
     EV<< "road size: "<<roads.size()<<endl ;
     std::cout<< "road size: "<<roads.size()<<endl ;
-    for(int i=0;i<roads.size();i++)
+   /* for(int i=0;i<roads.size();i++)
     {
         EV<< "road "<<roads[i]<<endl ;
         std::cout<< "road   "<<roads[i]<<endl ;
-    }
+    }*/
     for ( ; it != roads.end(); ++it )
     {
         if(*it == roadid&&it!=roads.begin())
@@ -109,18 +108,33 @@ void RoadTable::findnewRoadid(const IPvXAddress & address,string roadid)   {
     }
     roads.insert(roads.begin(),1,roadid);
     roadtable[address]=roads;
+    positontable[address]=position;
+
       return;
 
 }
-vector<string> RoadTable::getRoadTable(const IPvXAddress & address)   {
+vector<string> RoadTable::getRoadTable(const IPv4Address & address)   {
 
     return roadtable[address];
 }
-Coord RoadTable::getPositionTable(const IPvXAddress & address)   {
+Coord RoadTable::getPositionTable(const IPv4Address & address)   {
 
+    AddressToPosition::iterator it ;
+    int i=0;
+    cout<<"list packets  for "<<address<<endl;
+
+    for(it=positontable.begin();it != positontable.end();it++)
+    {
+        i++;
+        cout<<i;
+        cout<<"   packt:"<<it->first<<"  position"<<it->second<<endl;
+        cout << (it->first==address)<<endl;
+    }
+    cout<<" have packets:  ";
+    cout<<i<<endl;
     return positontable[address];
 }
-void RoadTable::removeRoadTable(const IPvXAddress & address) {
+void RoadTable::removeRoadTable(const IPv4Address & address) {
 
 }
 
