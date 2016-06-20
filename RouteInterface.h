@@ -119,6 +119,7 @@ protected:
     std::string getConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2);
     bool hasJunction(std::string road,std::string junction);
     string getConnectingJunction(std::string conn1,std::string conn2);
+    bool  isLocalateInIntersection();
 
 };
 

@@ -339,6 +339,10 @@ bool  RouteInterface::isRoadOfJunction(std::string road,std::string junction)
         return false;
     }
 }
+bool  RouteInterface::isLocalateInIntersection()
+{
+    return getRoadID().length()==3;
+}
 std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
 {
     std::vector<std::string>  roads;
