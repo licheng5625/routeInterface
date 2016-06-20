@@ -83,7 +83,10 @@ protected:
     virtual void processMessage(cPacket * ctrlPacket,IPv4ControlInfo *udpProtocolCtrlInfo){};
     std::string  getHostName() const;
     std::string  getRoadID() ;
+    std::string getRoadIntersection(std::string road1,std::string road2);
+    bool hasIntersection(std::string road,std::string intersce);
     bool  isRoadVertical(std::string road1,std::string road2);
+    bool  isLocalateInIntersection();
 
     IPvXAddress  getSelfAddress() const;
     virtual int numInitStages() const { return 5; }
@@ -109,16 +112,12 @@ protected:
     void  configureInterfaces(const char * interfaces);
     Coord getSelfPosition();
     Coord getSelfSpeed();
-    bool  isRoadOfJunction(std::string road,std::string Junction);
+    bool  isRoadOfConn(std::string road,std::string conn);
     double getAngel();
-    std::vector<std::string> getJunctionsOfRoad(std::string road);
-    std::vector<std::string> getRoadsOfJunction(std::string junction);
-    Coord getPositionOfJunction(std::string conn);
+    std::vector<std::string> getConnOfRoad(std::string road);
+    Coord getConnectPosition(std::string conn);
     void initRoadsTable();
-    std::string getConnectingRoadBetweenTwoRoads(std::string road1,std::string road2);
-    std::string getConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2);
-    bool hasJunction(std::string road,std::string junction);
-    string getConnectingJunction(std::string conn1,std::string conn2);
+    std::string caculateConnection(std::string conn1,std::string conn2);
 
 };
 
