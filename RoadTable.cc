@@ -27,27 +27,27 @@ bool RoadTable::addRoadTable(const IPv4Address & address,vector<string> roads,Co
 {
     AddressToRoad::const_iterator it = roadtable.find(address);
     positontable[address]=position;
-           if (it == roadtable.end())
-           {
-               roadtable[address]=roads;
-               std::cout<<"addRoadTable true"<<endl;
-               return true;
-           }
-           else
-           {
-               if (it->second.size()>roads.size())
-               {
-                std::cout<<"addRoadTable true size: "<<it->second.size()<<" new size: "<<roads.size()<<endl;
-                roadtable[address]=roads;
-                return true;
-               }
-           }
-           return false;
+   if (it == roadtable.end())
+   {
+       roadtable[address]=roads;
+       std::cout<<"addRoadTable true"<<endl;
+       return true;
+   }
+   else
+   {
+       if (it->second.size()>roads.size())
+       {
+        std::cout<<"addRoadTable true size: "<<it->second.size()<<" new size: "<<roads.size()<<endl;
+        roadtable[address]=roads;
+        return true;
+       }
+   }
+   return false;
 }
 void RoadTable::updataRoadTable(const IPv4Address & address,vector<string> roads,Coord position)
 {
-                positontable[address]=position;
-                roadtable[address]=roads;
+        positontable[address]=position;
+        roadtable[address]=roads;
 }
 vector<IPv4Address>  RoadTable::getAllIP()
         {

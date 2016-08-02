@@ -11,7 +11,7 @@
 
 GlobalPositionTable RouteInterface::globalPositionTable=GlobalPositionTable();
 std::string RouteInterface::protocalname;
-ofstream RouteInterface::inFile("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
+ofstream RouteInterface::inFile("/home/chengli/Schreibtisch/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
 //RouteInterface::inFile.open("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
@@ -341,7 +341,7 @@ bool  RouteInterface::isRoadOfJunction(std::string road,std::string junction)
 }
 bool  RouteInterface::isLocalateInIntersection()
 {
-    return getRoadID().length()==3;
+    return getRoadID().length()<8;
 }
 std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
 {

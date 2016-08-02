@@ -70,7 +70,7 @@ cMessage* PacketWaitingTable::findPacket(cPacket*  packet) {
 cMessage* PacketWaitingTable::findPacket(std::string packetname) {
     for (TimetoRDPacket::const_iterator it = waitinglist.begin(); it != waitinglist.end(); it++)
     {
-        if(it->second.first->getName()==packetname)
+        if(it->second.first->getName()==packetname )
         {
             return it->first;
         }
