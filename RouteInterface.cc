@@ -247,9 +247,14 @@ std::string RouteInterface::adjustRoadID(std::string roadid)
             return roadid.substr(0,3);
         }else
         {
+            if(roadid.length()==7)
+                {
+                    roadid.erase(roadid.find(":"),roadid.find(":")+1);
+                    return roadid.substr(0,3);
+                }
             if(roadid.length()!=8)
                {
-            return roadid;
+                 return roadid;
                }
         }
     }
