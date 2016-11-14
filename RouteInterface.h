@@ -49,8 +49,6 @@ protected:
     IInterfaceTable *interfaceTable;
     NodeStatus * nodeStatus;
     IMobility * mobility;
-    TraCIMobility* traci;
-    TraCIScenarioManager* tracimanager;
     cModule * host;
     INetfilter * networkProtocol;
     NotificationBoard *nb;
@@ -59,6 +57,8 @@ protected:
     static GlobalPositionTable globalPositionTable;
     static ofstream inFile;
     std::vector<std::string>roadslist;
+    TraCIMobility* traci;
+    TraCIScenarioManager* tracimanager;
 
     //self message
     cMessage *expungeTimer;    // timer to clean the routing table out
@@ -101,6 +101,7 @@ protected:
     // notification
 
     std::string adjustRoadID(std::string roadid);
+//    std::string adjustRoadIDnew(std::string roadid);
 
     void EV_LOG(std::string className,std::string context);
     void EV_LOG(std::string context);
@@ -121,6 +122,14 @@ protected:
     string getConnectingJunction(std::string conn1,std::string conn2);
     bool  isLocalateInIntersection();
 
+bool hasConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2);
+std::vector<std::string> getRoadsOfJunction(std::string junction);
+std::string getConnectingJunction(std::string conn1,std::string conn2);
+bool hasConnectingBetweenJunction(std::string conn1, std::string conn2);
+std::string roadBetweenJunctionAndRoad(std::string road, std::string intersection);
+std::string roadBetweenFarJunctionAndRoad(std::string road, std::string intersection);
+bool hasRoad(std::string road1, std::string road2, std::string road3);
+double junctionFrequence();
 };
 
 #endif /* RouteInterface_H_ */

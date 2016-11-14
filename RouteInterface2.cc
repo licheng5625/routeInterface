@@ -11,44 +11,42 @@
 
 GlobalPositionTable RouteInterface::globalPositionTable=GlobalPositionTable();
 std::string RouteInterface::protocalname;
-//ofstream RouteInterface::inFile("/home/xixi/Workspace/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
-ofstream RouteInterface::inFile("/home/xixiang/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
-//ofstream RouteInterface::inFile("/home/mehdi/workspace/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
+ofstream RouteInterface::inFile("/home/chengli/Schreibtisch/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/log.txt",ios::trunc);
 //RouteInterface::inFile.open("/Applications/omnetpp-4.5/samples/inetmanet-2.0/src/networklayer/routing/RBVTR/log.txt",ios::trunc);
 RouteInterface::RouteInterface() {
     // TODO Auto-generated constructor stub
 }
 
 RouteInterface::~RouteInterface() {
-    // inFile.close();
+   // inFile.close();
     // TODO Auto-generated destructor stub
 }
 void RouteInterface::initialize(int stage)
 {
     cSimpleModule::initialize(stage);
     if (stage == 0)
-    {
-        host = getContainingNode(this);
-        nodeStatus = dynamic_cast<NodeStatus *>(host->getSubmodule("status"));
-        //interfaceTable = InterfaceTableAccess().get();
-        mobility = check_and_cast<IMobility *>(host->getSubmodule("mobility"));
-        networkProtocol = check_and_cast<INetfilter *>(getModuleByPath(par("networkProtocolModule")));
+        {
+    host = getContainingNode(this);
+    nodeStatus = dynamic_cast<NodeStatus *>(host->getSubmodule("status"));
+    //interfaceTable = InterfaceTableAccess().get();
+    mobility = check_and_cast<IMobility *>(host->getSubmodule("mobility"));
+    networkProtocol = check_and_cast<INetfilter *>(getModuleByPath(par("networkProtocolModule")));
 
-        //routingTable = RoutingTableAccess().get();
-        interfaceTable = InterfaceTableAccess().get();
-        traci= TraCIMobilityAccess().get();
-        tracimanager=TraCIScenarioManagerAccess().get();
-    }
+    //routingTable = RoutingTableAccess().get();
+    interfaceTable = InterfaceTableAccess().get();
+    traci= TraCIMobilityAccess().get();
+    tracimanager=TraCIScenarioManagerAccess().get();
+        }
 
     if (stage == 4)
-    {
+            {
 
-        nb = NotificationBoardAccess().get();
-        networkProtocol->registerHook(0, this);
-        nb->subscribe(this, NF_LINK_FULL_PROMISCUOUS);
-        initRoadsTable();
-    }
-}
+            nb = NotificationBoardAccess().get();
+            networkProtocol->registerHook(0, this);
+            nb->subscribe(this, NF_LINK_FULL_PROMISCUOUS);
+            initRoadsTable();
+            }
+ }
 Coord RouteInterface::getPositionOfJunction(std::string conn)
 {
     return tracimanager->commandGetJunctionPosition(conn);
@@ -58,17 +56,17 @@ void RouteInterface::receiveChangeNotification(int category, const cObject *deta
     //EV_LOG("RouteInterface ","receiveChangeNotification");
     Enter_Method("receiveChangeNotification");
     if (category == NF_LINK_FULL_PROMISCUOUS)
-    {
-        cPacket * pk = dynamic_cast<cPacket*>(  const_cast<cObject *>(details) );
-        if (pk)
-        {
-            Radio80211aControlInfo * cinfo = dynamic_cast<Radio80211aControlInfo*>(pk->getControlInfo());
-            if (cinfo)
-            {
+      {
+          cPacket * pk = dynamic_cast<cPacket*>(  const_cast<cObject *>(details) );
+          if (pk)
+          {
+             Radio80211aControlInfo * cinfo = dynamic_cast<Radio80211aControlInfo*>(pk->getControlInfo());
+             if (cinfo)
+             {
                 recPow = cinfo->getRecPow();
-            }
-        }
-    }
+             }
+          }
+      }
 }
 
 void RouteInterface::sendUDPPacket(UDPPacket * packet, double delay)
@@ -90,13 +88,13 @@ void RouteInterface::EV_LOG(std::string context)
 }
 void RouteInterface::EV_LOG(std::string className,std::string context)
 {
-    EV <<  className<<"  "<<context<<std::endl;
-    std::cout <<getHostName()<<"   "<<  className<<"  "<<context<<std::endl;
+  EV <<  className<<"  "<<context<<std::endl;
+  std::cout <<getHostName()<<"   "<<  className<<"  "<<context<<std::endl;
 }
 void RouteInterface::sendRIPacket(cPacket * packet, const IPvXAddress& destAddr, unsigned int timeToLive, double delay)
 {
     ASSERT(timeToLive != 0);
-    // Enter_Method_Silent();
+   // Enter_Method_Silent();
     EV_LOG("create UDP");
 
     IPv4ControlInfo *networkProtocolControlInfo = new IPv4ControlInfo();
@@ -107,8 +105,8 @@ void RouteInterface::sendRIPacket(cPacket * packet, const IPvXAddress& destAddr,
     networkProtocolControlInfo->setSrcAddr(getSelfIPAddress());
 
     // TODO: Implement: support for multiple interfaces
-    // InterfaceEntry *ifEntry = interfaceTable->getInterfaceByName("wlan0");
-    //   networkProtocolControlInfo->setInterfaceId(ifEntry->getInterfaceId());
+   // InterfaceEntry *ifEntry = interfaceTable->getInterfaceByName("wlan0");
+ //   networkProtocolControlInfo->setInterfaceId(ifEntry->getInterfaceId());
 
     UDPPacket *udpPacket = new UDPPacket( packet->getName());
     udpPacket->encapsulate(packet);
@@ -144,13 +142,13 @@ void RouteInterface::handleMessage(cMessage *message)
         IPv4ControlInfo *udpProtocolCtrlInfo = dynamic_cast<IPv4ControlInfo *>(udpPacket->getControlInfo());
         processMessage(  ctrlPacket, udpProtocolCtrlInfo);
         delete udpPacket;
-    }
+     }
 }
 void RouteInterface:: filterSelfMessage(cMessage * message)
 {
     if (message == expungeTimer)
     {
-        expungeRoutes();
+      expungeRoutes();
     }
     else
     {
@@ -166,10 +164,9 @@ std::string RouteInterface::getHostName() const
 std::string RouteInterface::getRoadID()
 {
     //return traci->getRoadId();
-    return adjustRoadID(traci->getRoadId());
+   return adjustRoadID(traci->getRoadId());
     //cout<<host;
 }
-
 bool  RouteInterface::isRoadVertical(std::string road1,std::string road2)
 {
     std::string inter=getConnectingJunctionBetweenTwoRoads(road1,road2);
@@ -188,9 +185,9 @@ bool  RouteInterface::isRoadVertical(std::string road1,std::string road2)
     firstroad2=road2.substr(0,3);
     secondroad2=road2.substr(5);
     if(secondroad2!=inter)
-    {
-        firstroad2=secondroad2;
-    }
+        {
+            firstroad2=secondroad2;
+        }
     if((firstroad.substr(0,1)!=firstroad2.substr(0,1))&&(firstroad.substr(1)!=firstroad2.substr(1)))
     {
         return true;
@@ -206,81 +203,59 @@ std::string  RouteInterface::getConnectingJunctionBetweenTwoRoads(std::string ro
     std::string secondroad="";
     firstroad=road1.substr(0,3);
     secondroad=road1.substr(5);
-    //    std::cout << firstroad << endl;
-    //    std::cout << secondroad << endl;
-
-    //        std::cout << road1 << endl;
-    //        std::cout << road2 << endl;
 
     std::string firstroad2="";
     std::string secondroad2="";
     firstroad2=road2.substr(0,3);
     secondroad2=road2.substr(5);
-    //    std::cout << firstroad2 << endl;
-    //    std::cout << secondroad2 << endl;
-
     if(firstroad==firstroad2)
         return firstroad;
     if(firstroad==secondroad2)
-        return firstroad;
+           return firstroad;
     if(secondroad==secondroad2)
-        return secondroad;
+           return secondroad;
     if(secondroad==firstroad2)
-        return secondroad;
+           return secondroad;
     return std::string("none");
 }
 
 bool RouteInterface::hasJunction(std::string road,std::string junction)
 {
     std::string firstroad="";
-    std::string secondroad="";
-    if(road.length()!=8||junction.length()!=3)
-        return false;
-    firstroad=road.substr(0,3);
-    secondroad=road.substr(5);
+     std::string secondroad="";
+     if(road.length()!=8||junction.length()!=3)
+         return false;
+     firstroad=road.substr(0,3);
+     secondroad=road.substr(5);
     if(firstroad==junction)
-        return true;
+            return true;
     if(secondroad==junction)
-        return true;
+              return true;
     return false;
 }
-
 std::string RouteInterface::adjustRoadID(std::string roadid)
 {
-//    std::cout << "roadid = " << roadid << endl;
     std::string firstroad="";
     std::string secondroad="";
-    if (roadid.length()==9)
-    {
-//        std::cout << simTime() << " = 6.020545636002 ?!" << endl;
-        roadid.erase(roadid.find(":"),roadid.find(":")+1);
-//        std::cout << "roadid = " << roadid << endl;
-//        std::cout << " " << endl;
-    }
-    else
+    if (roadid.length()==9){
+    roadid.erase(roadid.find(":"),roadid.find(":")+1);
+    }else
     {
         if(roadid.length()==6)
         {
             roadid.erase(roadid.find(":"),roadid.find(":")+1);
-//            std::cout << roadid.substr(0,3) << endl;
-//            std::cout << " " << endl;
             return roadid.substr(0,3);
-        }
-        else
+        }else
         {
             if(roadid.length()==7)
-            {
-                roadid.erase(roadid.find(":"),roadid.find(":")+1);
-//                std::cout << roadid.substr(0,3) << endl;
-//                std::cout << " " << endl;
-                return roadid.substr(0,3);
-            }
+                {
+                    roadid.erase(roadid.find(":"),roadid.find(":")+1);
+                    return roadid.substr(0,3);
+                }
             if(roadid.length()!=8)
-            {
-//                std::cout << "roadid = " << roadid << endl;
-//                std::cout << " " << endl;
-                return roadid;
-            }
+               {
+                 return roadid;
+               }
         }
     }
     if (roadid[0]>roadid[5])
@@ -297,7 +272,7 @@ std::string RouteInterface::adjustRoadID(std::string roadid)
             return firstroad+"to"+secondroad;
         }
     }
-    return roadid;
+      return roadid;
     //cout<<host;
 }
 
@@ -324,12 +299,12 @@ bool RouteInterface::handleOperationStage(LifecycleOperation * operation, int st
     if (dynamic_cast<NodeStartOperation *>(operation))  {
         if (stage == NodeStartOperation::STAGE_APPLICATION_LAYER)
             int a = 1;//To do clear stage
-        //configureInterfaces();
+           //configureInterfaces();
     }
     else if (dynamic_cast<NodeShutdownOperation *>(operation)) {
         if (stage == NodeShutdownOperation::STAGE_APPLICATION_LAYER)
             int a = 1;//To do clear stage
-        //neighborPositionTable.clear();
+             //neighborPositionTable.clear();
     }
     else if (dynamic_cast<NodeCrashOperation *>(operation)) {
         if (stage == NodeCrashOperation::STAGE_CRASH)
@@ -353,7 +328,7 @@ void RouteInterface::configureInterfaces( const char * interfaces)
 double RouteInterface::getAngel()
 {
     //return traci->getRoadId();
-    return  traci->getAngleRad();
+   return  traci->getAngleRad();
     //cout<<host;
 }
 
@@ -369,7 +344,26 @@ bool  RouteInterface::isRoadOfJunction(std::string road,std::string junction)
         return false;
     }
 }
-
+bool  RouteInterface::isLocalateInIntersection()
+{
+    return getRoadID().length()<8;
+}
+std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
+{
+    std::vector<std::string>  roads;
+    for (int i=0;i<roadslist.size();i++)
+    {
+        if(isRoadOfJunction(roadslist[i],junction))
+        {
+            roads.push_back(roadslist[i]);
+            if(roads.size()==4)
+            {
+                break;
+            }
+        }
+    }
+    return roads;
+}
 std::vector<std::string>  RouteInterface::getJunctionsOfRoad(std::string road)
 {
     std::vector<std::string>  conn;
@@ -377,40 +371,20 @@ std::vector<std::string>  RouteInterface::getJunctionsOfRoad(std::string road)
     conn.push_back(road.substr(5));
     return conn;
 }
-
 void RouteInterface::initRoadsTable()
 {
-    std::list<std::string> roadsname=tracimanager->commandGetLaneIds();
-    for(std::list<std::string>::iterator iter=roadsname.begin();iter!=roadsname.end();iter++)
+std::list<std::string> roadsname=tracimanager->commandGetLaneIds();
+    for(std::list<std::string>::iterator iter=roadsname.begin();iter!=roadsname.end();++iter)
     {
         std::string templane=*iter;
-        //        std::cout<<templane<<endl;
         if(templane.length()==10)
         {
             templane=templane.substr(0,8);
-            if(std::find(roadslist.begin(),roadslist.end(),templane)==roadslist.end()){
-                //            templane=templane.substr(0,8);
-                roadslist.push_back(templane);
-            }
+            roadslist.push_back(templane);
         }
     }
-}
-
-//void RouteInterface::initRoadsTable()
-//{
-//    std::list<std::string> roadsname=tracimanager->commandGetLaneIds();
-//    for(std::list<std::string>::iterator iter=roadsname.begin();iter!=roadsname.end();++iter)
-//    {
-//        std::string templane=*iter;
-//        if(templane.length()==10)
-//        {
-//            templane=templane.substr(0,8);
-//            roadslist.push_back(templane);
-//        }
-//    }
-//}
-
-std::string RouteInterface::getConnectingRoadBetweenTwoRoads(std::string road1,std::string road2)
+  }
+string RouteInterface::getConnectingRoadBetweenTwoRoads(std::string road1,std::string road2)
 {
     //calculate the road between 2 roads like 1/3to2/3  3/3to4/3  return 2/3to3/3
     std::vector<std::string> conn1road=getJunctionsOfRoad(road1);
@@ -432,90 +406,23 @@ std::string RouteInterface::getConnectingRoadBetweenTwoRoads(std::string road1,s
         if(roadslist[i]==testconn0)
             return testconn0;
         if(roadslist[i]==testconn1)
-            return testconn1;
+                   return testconn1;
         if(roadslist[i]==testconn2)
-            return testconn2;
+                   return testconn2;
         if(roadslist[i]==testconn3)
-            return testconn3;
+                   return testconn3;
 
     }
     return std::string("none");
-    // UDPPacket*o=NULL;
-    // cPacket *p=check_and_cast<cPacket*>(o);
-}
+   // UDPPacket*o=NULL;
+   // cPacket *p=check_and_cast<cPacket*>(o);
+  }
 
-bool RouteInterface::hasConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2)
-{
-    std::string firstroad="";
-    std::string secondroad="";
-    firstroad=road1.substr(0,3);
-    secondroad=road1.substr(5);
-
-    std::string firstroad2="";
-    std::string secondroad2="";
-    firstroad2=road2.substr(0,3);
-    secondroad2=road2.substr(5);
-    if(firstroad==firstroad2)
-        return true;
-    if(firstroad==secondroad2)
-        return true;
-    if(secondroad==secondroad2)
-        return true;
-    if(secondroad==firstroad2)
-        return true;
-    return false;
-}
-
-std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
-{
-    std::vector<std::string>  roads;
-    for (int i=0;i<roadslist.size();i++)
-    {
-        if(isRoadOfJunction(roadslist[i],junction))
-        {
-            roads.push_back(roadslist[i]);
-            if(roads.size()==4)
-            {
-                break;
-            }
-        }
-    }
-    return roads;
-}
-
-bool  RouteInterface::isLocalateInIntersection()
-{
-    return getRoadID().length()<8;
-}
-
-std::vector<std::string>  RouteInterface::getRoadsOfJunctionnew(std::string junction)
-{
-    std::vector<std::string>  roads;
-    for(std::vector<std::string>::iterator it=roadslist.begin();it!=roadslist.end();it++){
-        std::string road= *it;
-        //std::cout<<road<<endl;
-    }
-    for(std::vector<std::string>::iterator it=roadslist.begin();it!=roadslist.end();it++)
-        //    for (int i=0;i<roadslist.size();i++)
-    {
-        std::string road= *it;
-        if(isRoadOfJunction(road,junction))
-        {
-            roads.push_back(road);
-            //            std::cout<<road<<endl;
-            if(roads.size()==8)
-            {
-                break;
-            }
-        }
-    }
-    return roads;
-}
-std::string RouteInterface::getConnectingJunctionnew(std::string conn1,std::string conn2)
+string RouteInterface::getConnectingJunction(std::string conn1,std::string conn2)
 {
     //calculate the road between 2 roads like 1/3to2/3  3/3to4/3  return 2/3to3/3
-    std::vector<std::string>roadsofconn1 = getRoadsOfJunctionnew(conn1);
-    std::vector<std::string>roadsofconn2 = getRoadsOfJunctionnew(conn2);
+    vector<string>roadsofconn1 = getRoadsOfJunction(conn1);
+    vector<string>roadsofconn2 = getRoadsOfJunction(conn2);
     for (int i=0;i<roadsofconn1.size();i++)
     {
         for (int j=0;j<roadsofconn2.size();j++)
@@ -523,95 +430,10 @@ std::string RouteInterface::getConnectingJunctionnew(std::string conn1,std::stri
             string junction =getConnectingJunctionBetweenTwoRoads(roadsofconn2[j],roadsofconn1[i]);
             if(junction!="none")
                 return junction;
+
         }
     }
     return std::string("none");
-    // UDPPacket*o=NULL;
-    // cPacket *p=check_and_cast<cPacket*>(o);
-}
-
-bool RouteInterface::hasConnectingBetweenJunction(std::string conn1, std::string conn2)
-{
-    std::vector<std::string>roadsofconn1 = getRoadsOfJunctionnew(conn1);
-    std::vector<std::string>roadsofconn2 = getRoadsOfJunctionnew(conn2);
-    for(int i=0;i<roadsofconn1.size();i++)
-    {
-        //      std::cout<<roadsofconn1[i];
-        for(int j=0;j<roadsofconn2.size();j++)
-        {
-            //          std::cout<<roadsofconn2[2];
-            if(roadsofconn1[i]==roadsofconn2[j])
-                return true;
-        }
-    }
-    return false;
-}
-std::string RouteInterface::roadBetweenJunctionAndRoad(std::string road, std::string intersection)
-{
-    std::vector<std::string> connroad=getJunctionsOfRoad(road);
-    std::string testconn0=adjustRoadID(connroad[0]+"to"+intersection);
-    std::string testconn1=adjustRoadID(connroad[1]+"to"+intersection);
-    for(int i=0;i<roadslist.size();i++)
-    {
-        std::cout <<roadslist[i]<<endl;
-        if(roadslist[i]==testconn0)
-            return testconn0;
-        if(roadslist[i]==testconn1)
-            return testconn1;
-
-    }
-    return std::string("none");
-
-}
-
-std::string RouteInterface::roadBetweenFarJunctionAndRoad(std::string road, std::string intersection)
-{
-    std::vector<std::string> connroad=getJunctionsOfRoad(road);
-    std::string junction=getConnectingJunctionnew(connroad[0],intersection);
-    std::string road1="none";
-    if(junction!="none"){
-        road1=adjustRoadID(connroad[0]+"to"+junction);
-
-    }
-    else{
-        junction=getConnectingJunctionnew(connroad[1],intersection);
-        if(junction!="none")
-        road1=adjustRoadID(connroad[1]+"to"+junction);
-
-    }
-    return road1;
-}
-bool RouteInterface::hasRoad(std::string road1, std::string road2, std::string road3)
-{
-    std::string testconn0=adjustRoadID(road1+"to"+road3);
-    std::string testconn1=adjustRoadID(road2+"to"+road3);
-    for(int i=0;i<roadslist.size();i++)
-    {
-        std::cout <<roadslist[i]<<endl;
-        if(roadslist[i]==testconn0)
-            return true;
-        if(roadslist[i]==testconn1)
-            return true;
-
-    }
-    return false;
-}
-
-double RouteInterface::junctionFrequence()
-{
-    std::vector<IPvXAddress> vehicleAddresses = globalPositionTable.getAddresses();
-    std::vector<std::string>junctionids;
-    for (std::vector<IPvXAddress>::iterator it = vehicleAddresses.begin(); it != vehicleAddresses.end(); it++) {
-        const IPvXAddress & vehicleAddress = *it;
-        std::string roadid=globalPositionTable.getRoadID(vehicleAddress);
-        if(roadid.length()==3){
-            if(std::find(junctionids.begin(),junctionids.end(),roadid)==junctionids.end())
-                junctionids.push_back(roadid);
-        }
-
-    }
-    double  junctionSize=junctionids.size();
-    double  junctionNumber=1-junctionSize/25;
-    std::cout<<"junctionid size"<<junctionids.size()<<endl;
-    return junctionNumber;
-}
+   // UDPPacket*o=NULL;
+   // cPacket *p=check_and_cast<cPacket*>(o);
+  }
