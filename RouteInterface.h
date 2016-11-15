@@ -43,6 +43,8 @@ public:
     DelayPacketTable delayPacketlist;
     double recPow;
     std::string roadid;
+    cMessage * checkRoadIDTimer;
+
 protected:
     unsigned int UDPPort;
     IRoutingTable *routingTable;
@@ -78,6 +80,7 @@ protected:
     virtual void receiveChangeNotification(int category, const cObject *details);
 
     void filterSelfMessage(cMessage * message);
+    void  updateGlobalpositionTable();
 
     virtual void processSelfMessage(cMessage * message){};
     virtual void processMessage(cPacket * ctrlPacket,IPv4ControlInfo *udpProtocolCtrlInfo){};
@@ -115,16 +118,19 @@ protected:
     std::vector<std::string> getJunctionsOfRoad(std::string road);
     std::vector<std::string> getRoadsOfJunction(std::string junction);
     Coord getPositionOfJunction(std::string conn);
+    void scheduleCheckRoadIDTimer(simtime_t Interval);
+
     void initRoadsTable();
     std::string getConnectingRoadBetweenTwoRoads(std::string road1,std::string road2);
     std::string getConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2);
     bool hasJunction(std::string road,std::string junction);
     string getConnectingJunction(std::string conn1,std::string conn2);
     bool  isLocalateInIntersection();
+    bool isCoordinator(const IPvXAddress & address);
 
 bool hasConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2);
-std::vector<std::string> getRoadsOfJunction(std::string junction);
-std::string getConnectingJunction(std::string conn1,std::string conn2);
+//std::vector<std::string> getRoadsOfJunction(std::string junction);
+//std::string getConnectingJunction(std::string conn1,std::string conn2);
 bool hasConnectingBetweenJunction(std::string conn1, std::string conn2);
 std::string roadBetweenJunctionAndRoad(std::string road, std::string intersection);
 std::string roadBetweenFarJunctionAndRoad(std::string road, std::string intersection);

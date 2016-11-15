@@ -42,13 +42,24 @@ void RouteInterface::initialize(int stage)
 
     if (stage == 4)
     {
-
+        checkRoadIDTimer = new cMessage("checkRoadIDTimer");
         nb = NotificationBoardAccess().get();
         networkProtocol->registerHook(0, this);
         nb->subscribe(this, NF_LINK_FULL_PROMISCUOUS);
         initRoadsTable();
+        globalPositionTable.setHostName(getSelfIPAddress(),getHostName());
+        globalPositionTable.setPosition(getSelfIPAddress(),getSelfPosition());
+        globalPositionTable.setRoadID(getSelfIPAddress(),getRoadID());
+        scheduleCheckRoadIDTimer(1);
     }
 }
+void RouteInterface::scheduleCheckRoadIDTimer(simtime_t Interval)
+{
+//    EV_LOG("Scheduling beacon timer");
+    //todo :  The fewer neighbors there are, the more frequent is a node��s HELLO beaconing.
+    scheduleAt(simTime() + Interval, checkRoadIDTimer);
+}
+
 Coord RouteInterface::getPositionOfJunction(std::string conn)
 {
     return tracimanager->commandGetJunctionPosition(conn);
@@ -146,11 +157,18 @@ void RouteInterface::handleMessage(cMessage *message)
         delete udpPacket;
     }
 }
+void RouteInterface:: updateGlobalpositionTable()
+{
+    globalPositionTable.setPosition(getSelfIPAddress(),getSelfPosition());
+    globalPositionTable.setRoadID(getSelfIPAddress(),getRoadID());
+    scheduleCheckRoadIDTimer(1);
+}
+
 void RouteInterface:: filterSelfMessage(cMessage * message)
 {
-    if (message == expungeTimer)
+    if (message == checkRoadIDTimer)
     {
-        expungeRoutes();
+        updateGlobalpositionTable();
     }
     else
     {
@@ -396,19 +414,7 @@ void RouteInterface::initRoadsTable()
     }
 }
 
-//void RouteInterface::initRoadsTable()
-//{
-//    std::list<std::string> roadsname=tracimanager->commandGetLaneIds();
-//    for(std::list<std::string>::iterator iter=roadsname.begin();iter!=roadsname.end();++iter)
-//    {
-//        std::string templane=*iter;
-//        if(templane.length()==10)
-//        {
-//            templane=templane.substr(0,8);
-//            roadslist.push_back(templane);
-//        }
-//    }
-//}
+
 
 std::string RouteInterface::getConnectingRoadBetweenTwoRoads(std::string road1,std::string road2)
 {
@@ -466,29 +472,16 @@ bool RouteInterface::hasConnectingJunctionBetweenTwoRoads(std::string road1,std:
     return false;
 }
 
-std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
-{
-    std::vector<std::string>  roads;
-    for (int i=0;i<roadslist.size();i++)
-    {
-        if(isRoadOfJunction(roadslist[i],junction))
-        {
-            roads.push_back(roadslist[i]);
-            if(roads.size()==4)
-            {
-                break;
-            }
-        }
-    }
-    return roads;
-}
+
+
+
 
 bool  RouteInterface::isLocalateInIntersection()
 {
     return getRoadID().length()<8;
 }
 
-std::vector<std::string>  RouteInterface::getRoadsOfJunctionnew(std::string junction)
+std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
 {
     std::vector<std::string>  roads;
     for(std::vector<std::string>::iterator it=roadslist.begin();it!=roadslist.end();it++){
@@ -511,11 +504,11 @@ std::vector<std::string>  RouteInterface::getRoadsOfJunctionnew(std::string junc
     }
     return roads;
 }
-std::string RouteInterface::getConnectingJunctionnew(std::string conn1,std::string conn2)
+std::string RouteInterface::getConnectingJunction(std::string conn1,std::string conn2)
 {
     //calculate the road between 2 roads like 1/3to2/3  3/3to4/3  return 2/3to3/3
-    std::vector<std::string>roadsofconn1 = getRoadsOfJunctionnew(conn1);
-    std::vector<std::string>roadsofconn2 = getRoadsOfJunctionnew(conn2);
+    std::vector<std::string>roadsofconn1 = getRoadsOfJunction(conn1);
+    std::vector<std::string>roadsofconn2 = getRoadsOfJunction(conn2);
     for (int i=0;i<roadsofconn1.size();i++)
     {
         for (int j=0;j<roadsofconn2.size();j++)
@@ -532,8 +525,8 @@ std::string RouteInterface::getConnectingJunctionnew(std::string conn1,std::stri
 
 bool RouteInterface::hasConnectingBetweenJunction(std::string conn1, std::string conn2)
 {
-    std::vector<std::string>roadsofconn1 = getRoadsOfJunctionnew(conn1);
-    std::vector<std::string>roadsofconn2 = getRoadsOfJunctionnew(conn2);
+    std::vector<std::string>roadsofconn1 = getRoadsOfJunction(conn1);
+    std::vector<std::string>roadsofconn2 = getRoadsOfJunction(conn2);
     for(int i=0;i<roadsofconn1.size();i++)
     {
         //      std::cout<<roadsofconn1[i];
@@ -567,14 +560,14 @@ std::string RouteInterface::roadBetweenJunctionAndRoad(std::string road, std::st
 std::string RouteInterface::roadBetweenFarJunctionAndRoad(std::string road, std::string intersection)
 {
     std::vector<std::string> connroad=getJunctionsOfRoad(road);
-    std::string junction=getConnectingJunctionnew(connroad[0],intersection);
+    std::string junction=getConnectingJunction(connroad[0],intersection);
     std::string road1="none";
     if(junction!="none"){
         road1=adjustRoadID(connroad[0]+"to"+junction);
 
     }
     else{
-        junction=getConnectingJunctionnew(connroad[1],intersection);
+        junction=getConnectingJunction(connroad[1],intersection);
         if(junction!="none")
         road1=adjustRoadID(connroad[1]+"to"+junction);
 

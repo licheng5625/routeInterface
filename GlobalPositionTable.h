@@ -33,9 +33,11 @@ class  GlobalPositionTable {
         typedef std::pair<simtime_t, Coord> AddressToPositionMapValue;
         typedef std::map<IPvXAddress, AddressToPositionMapValue> AddressToPositionMap;
         typedef std::map<IPvXAddress, std::string> AddressToHostnameMap;
+        typedef std::map<IPvXAddress, std::string> AddressToRoadIDMap;
+
         AddressToPositionMap addressToPositionMap;
         AddressToHostnameMap addressToHostnameMap;
-
+        AddressToRoadIDMap addressToRoadIDMap;
     public:
         GlobalPositionTable() { }
 
@@ -51,6 +53,9 @@ class  GlobalPositionTable {
 
         void removePosition(const IPvXAddress & address);
         void removeOldPositions(simtime_t timestamp);
+        void setRoadID(const IPvXAddress & address, const std::string roadID);
+
+        std::string getRoadID(const IPvXAddress & address) const;
 
         void clear();
         simtime_t getOldestPosition() const;

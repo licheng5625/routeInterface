@@ -76,4 +76,19 @@ void GlobalPositionTable::clear() {
     addressToHostnameMap.clear();
 }
 
+void GlobalPositionTable::setRoadID(const IPvXAddress & address, const std::string roadID)
+{
+    ASSERT(!address.isUnspecified());
+    addressToRoadIDMap[address] = roadID;
+}
 
+std::string GlobalPositionTable::getRoadID(const IPvXAddress & address) const
+{
+    AddressToRoadIDMap::const_iterator it = addressToRoadIDMap.find(address);
+    if (it == addressToRoadIDMap.end()) {
+        return "NONE";
+    }
+    else {
+        return it->second;
+    }
+}
