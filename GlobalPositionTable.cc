@@ -92,3 +92,17 @@ std::string GlobalPositionTable::getRoadID(const IPvXAddress & address) const
         return it->second;
     }
 }
+simtime_t
+GlobalPositionTable::getOldestPosition() const {
+    simtime_t oldestPosition =
+SimTime::getMaxTime();
+    for (AddressToPositionMap::const_iterator it
+= addressToPositionMap.begin(); it != addressToPositionMap.end();
+it++) {
+        const simtime_t & time =
+it->second.first;
+        if (time < oldestPosition)
+            oldestPosition = time;
+    }
+    return oldestPosition;
+}
