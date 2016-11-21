@@ -126,6 +126,8 @@ protected:
     bool hasJunction(std::string road,std::string junction);
     string getConnectingJunction(std::string conn1,std::string conn2);
     bool  isLocalateInIntersection();
+    bool  isLocalateInIntersection(string roodID);
+
     bool isCoordinator(const IPvXAddress & address);
 
 bool hasConnectingJunctionBetweenTwoRoads(std::string road1,std::string road2);

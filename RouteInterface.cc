@@ -473,12 +473,15 @@ bool RouteInterface::hasConnectingJunctionBetweenTwoRoads(std::string road1,std:
 }
 
 
-
+bool  RouteInterface::isLocalateInIntersection(string roodID)
+{
+    return roodID.length()<8;
+}
 
 
 bool  RouteInterface::isLocalateInIntersection()
 {
-    return getRoadID().length()<8;
+    return isLocalateInIntersection(getRoadID());
 }
 
 std::vector<std::string>  RouteInterface::getRoadsOfJunction(std::string junction)
